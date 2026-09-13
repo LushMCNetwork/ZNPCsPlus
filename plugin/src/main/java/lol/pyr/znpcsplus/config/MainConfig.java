@@ -55,6 +55,20 @@ public interface MainConfig {
         return autoSaveInterval() != -1;
     }
 
+    @ConfKey("npc-resync-interval")
+    @ConfComments({
+            "How often (in seconds) to force npcs to resend their spawn packets to everyone currently viewing them, set this to -1 to disable",
+            "This works around client-side performance mods (e.g. entity culling mods) that can incorrectly hide a npc",
+            "and never re-render it, since the server has no way of detecting that this happened",
+            "This causes a brief flicker for affected players, so avoid setting this too low"
+    })
+    @DefaultInteger(300)
+    int npcResyncInterval();
+
+    default boolean npcResyncEnabled() {
+        return npcResyncInterval() != -1;
+    }
+
     @ConfKey("look-property-distance")
     @ConfComments("How far should the look property work from in blocks")
     @DefaultDouble(10)
