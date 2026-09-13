@@ -44,6 +44,7 @@ import lol.pyr.znpcsplus.skin.cache.SkinCacheCleanTask;
 import lol.pyr.znpcsplus.storage.NpcStorageType;
 import lol.pyr.znpcsplus.tasks.HologramRefreshTask;
 import lol.pyr.znpcsplus.tasks.NpcProcessorTask;
+import lol.pyr.znpcsplus.tasks.NpcResyncTask;
 import lol.pyr.znpcsplus.tasks.ViewableCleanupListener;
 import lol.pyr.znpcsplus.updater.UpdateChecker;
 import lol.pyr.znpcsplus.updater.UpdateNotificationListener;
@@ -171,6 +172,10 @@ public class ZNpcsPlus {
         scheduler.runDelayedTimerAsync(new NpcProcessorTask(npcRegistry, propertyRegistry, userManager), 60L, 3L);
         scheduler.runDelayedTimerAsync(new HologramRefreshTask(npcRegistry), 60L, 20L);
         scheduler.runDelayedTimerAsync(new SkinCacheCleanTask(skinCache), 1200, 1200);
+        if (configManager.getConfig().npcResyncEnabled()) {
+            long resyncDelay = configManager.getConfig().npcResyncInterval() * 20L;
+            scheduler.runDelayedTimerAsync(new NpcResyncTask(npcRegistry), resyncDelay, resyncDelay);
+        }
         pluginManager.registerEvents(new ViewableCleanupListener(), bootstrap);
 
         log(ChatColor.WHITE + " * Loading data...");
